@@ -31,7 +31,7 @@ def truth_permutation(n: int) -> list[list[bool]]:
         lst[i].extend(prev[i])
 
     for i in range(a, len(lst)):
-        lst[i].extend(prev[a - i])
+        lst[i].extend(prev[i - a])
     return lst
 
 
