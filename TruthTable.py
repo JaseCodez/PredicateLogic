@@ -1,60 +1,30 @@
-from LogicSymbol import Conditional, Conjunction, Biconditional, Disjunction, Not, Expr
+from LogicSymbol import Conditional, Conjunction, Biconditional, Disjunction, Not, Expr, Atomic
 
 
-class GenericAtomic(Expr):
+class GenericAtomic(Atomic):
     def __init__(self, name: str):
+        Atomic.__init__(self, True)
         self.name = name
+
+    def setValue(self, val: bool) -> None:
+        self.phi = val
 
     def __str__(self):
         return self.name
 
 
-class TruthTable(Expr):
-    def __init__(self, left: Expr, right: Expr, op: str, neg_left=False, neg_right=False):
-        self.left = left
-        self.right = right
-        self.op = op
-        self.neg_left = neg_left
-        self.neg_right = neg_right
-
-    def evaluate(self):
-        left = self.left.evaluate()
-        right = self.right.evaluate()
-        if self.op.lower == 'and':
-            self._and()
-        elif self.op.lower == 'conditional':
-            self._conditional()
-        elif self.op.lower == 'biconditional':
-            self._biconditional()
-        elif self.op.lower == 'or':
-            self._or()
-        else:
-            raise Exception
-
-    def _conditional(self):
-        pass
-
-    def _and(self):
-        pass
-
-    def _or(self):
-        pass
-
-    def _biconditional(self):
-        pass
-
-
-def truth_permutation(n: int) -> list[list[str]]:
+def truth_permutation(n: int) -> list[list[bool]]:
     if n == 1:
-        return [['T'], ['F']]
+        return [[True], [False]]
     a = 2**n
     a //= 2
     lst = []
     for _ in range(a):
-        lst.append(['T'])
+        lst.append([True])
 
     for _ in range(a):
-        lst.append(['F'])
+        lst.append([False])
+
     prev = truth_permutation(n - 1)
 
     for i in range(a):
@@ -65,7 +35,23 @@ def truth_permutation(n: int) -> list[list[str]]:
     return lst
 
 
+def truth_table(expr: Expr, lst: list[GenericAtomic]) -> None:
+    perms = truth_permutation(len(lst))
+    for a in lst:
+        print(a.__str__() + '\t', end='')
+    print(expr, end='')
+
+    for i in range(len(perms)):
+        print('\n')
+        for x in range(len(lst)):
+            lst[x].setValue(perms[i][x])
+            print(perms[i][x].__str__() + '\t', end='')
+
+        print(expr.evaluate())
+
+
 if __name__ == '__main__':
-    for t in truth_permutation(3):
-        print(t)
+    A = GenericAtomic('A')
+    B = GenericAtomic('B')
+    truth_table(Conditional(A, B), [A, B])
 
