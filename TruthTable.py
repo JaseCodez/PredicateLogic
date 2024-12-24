@@ -1,23 +1,16 @@
-class BoolExpr:
-    def evaluate(self):
-        raise NotImplementedError
+from LogicSymbol import Conditional, Conjunction, Biconditional, Disjunction, Not, Expr
 
 
-class Atomic(BoolExpr):
-    def evaluate(self):
-        return True, False
+class GenericAtomic(Expr):
+    def __init__(self, name: str):
+        self.name = name
+
+    def __str__(self):
+        return self.name
 
 
-class Bool(BoolExpr):
-    def __init__(self, boolean: bool):
-        self.boolean = boolean
-
-    def evaluate(self):
-        return self.boolean
-
-
-class TruthTable(BoolExpr):
-    def __init__(self, left: BoolExpr, right: BoolExpr, op: str, neg_left=False, neg_right=False):
+class TruthTable(Expr):
+    def __init__(self, left: Expr, right: Expr, op: str, neg_left=False, neg_right=False):
         self.left = left
         self.right = right
         self.op = op
@@ -50,4 +43,29 @@ class TruthTable(BoolExpr):
     def _biconditional(self):
         pass
 
+
+def truth_permutation(n: int) -> list[list[str]]:
+    if n == 1:
+        return [['T'], ['F']]
+    a = 2**n
+    a //= 2
+    lst = []
+    for _ in range(a):
+        lst.append(['T'])
+
+    for _ in range(a):
+        lst.append(['F'])
+    prev = truth_permutation(n - 1)
+
+    for i in range(a):
+        lst[i].extend(prev[i])
+
+    for i in range(a, len(lst)):
+        lst[i].extend(prev[a - i])
+    return lst
+
+
+if __name__ == '__main__':
+    for t in truth_permutation(3):
+        print(t)
 
