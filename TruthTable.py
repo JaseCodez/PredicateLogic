@@ -16,7 +16,7 @@ class GenericAtomic(Atomic):
 def truth_permutation(n: int) -> list[list[bool]]:
     if n == 1:
         return [[True], [False]]
-    a = 2**n
+    a = 2 ** n
     a //= 2
     lst = []
     for _ in range(a):
@@ -45,13 +45,26 @@ def truth_table(expr: Expr, lst: list[GenericAtomic]) -> None:
         print('\n')
         for x in range(len(lst)):
             lst[x].setValue(perms[i][x])
-            print(perms[i][x].__str__() + '\t', end='')
 
-        print(expr.evaluate())
+            # Formatting looks nicer
+            if perms[i][x]:
+                s = 'T'
+            else:
+                s = 'F'
+            print(s + '\t', end='')
+
+        if expr.evaluate():
+            s = 'T'
+        else:
+            s = 'F'
+        print('|' + s)
 
 
 if __name__ == '__main__':
-    A = GenericAtomic('A')
-    B = GenericAtomic('B')
-    truth_table(Conditional(A, B), [A, B])
+    P = GenericAtomic('P')
+    Q = GenericAtomic('Q')
+    R = GenericAtomic('R')
+    S = GenericAtomic('S')
+    atomics = [P, Q, R, S]
+    truth_table(Conjunction(Conditional(P, Q), Disjunction(Not(S), R)), atomics)
 
