@@ -60,11 +60,33 @@ def truth_table(expr: Expr, lst: list[GenericAtomic]) -> None:
         print('|' + s)
 
 
+def is_contradiction(expr: Expr, lst: list[GenericAtomic]) -> bool:
+    perms = truth_permutation(len(lst))
+
+    for i in range(len(perms)):
+        for x in range(len(lst)):
+            lst[x].setValue(perms[i][x])
+
+        if expr.evaluate():
+            return False
+    return True
+
+
+def is_tautology(expr: Expr, lst: list[GenericAtomic]) -> bool:
+    perms = truth_permutation(len(lst))
+
+    for i in range(len(perms)):
+        for x in range(len(lst)):
+            lst[x].setValue(perms[i][x])
+
+        if not expr.evaluate():
+            return False
+    return True
+
+
 if __name__ == '__main__':
     P = GenericAtomic('P')
     Q = GenericAtomic('Q')
-    R = GenericAtomic('R')
-    S = GenericAtomic('S')
-    atomics = [P, Q, R, S]
-    truth_table(Conjunction(Conditional(P, Q), Disjunction(Not(S), R)), atomics)
+    atomics = [P]
+    print(is_tautology(Disjunction(Not(P), P), atomics))
 
