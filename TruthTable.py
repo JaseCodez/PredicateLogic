@@ -13,13 +13,13 @@ class GenericAtomic(Atomic):
         return self.name
 
 
-def truth_combination(n: int) -> list[list[bool]]:
+def truth_permutation(n: int) -> list[list[bool]]:
     if n == 1:
         return [[True], [False]]
     a = 2 ** n
     a //= 2
     lst = []
-    prev = truth_combination(n - 1)
+    prev = truth_permutation(n - 1)
     for i in range(a):
         temp = [True]
         temp.extend(prev[i])
@@ -34,7 +34,7 @@ def truth_combination(n: int) -> list[list[bool]]:
 
 
 def truth_table(expr: Expr, lst: list[GenericAtomic]) -> None:
-    perms = truth_combination(len(lst))
+    perms = truth_permutation(len(lst))
     for a in lst:
         print(a.__str__() + '\t', end='')
     print(expr, end='')
@@ -59,7 +59,7 @@ def truth_table(expr: Expr, lst: list[GenericAtomic]) -> None:
 
 
 def is_contradiction(expr: Expr, lst: list[GenericAtomic]) -> bool:
-    perms = truth_combination(len(lst))
+    perms = truth_permutation(len(lst))
 
     for i in range(len(perms)):
         for x in range(len(lst)):
@@ -71,7 +71,7 @@ def is_contradiction(expr: Expr, lst: list[GenericAtomic]) -> bool:
 
 
 def is_tautology(expr: Expr, lst: list[GenericAtomic]) -> bool:
-    perms = truth_combination(len(lst))
+    perms = truth_permutation(len(lst))
 
     for i in range(len(perms)):
         for x in range(len(lst)):
